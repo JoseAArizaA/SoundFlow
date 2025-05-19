@@ -1,0 +1,7 @@
+/* Estilo para LABELS */
+.label-formulario {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-padding: 4 0 2 0;
+}

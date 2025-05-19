@@ -1,0 +1,9 @@
+/* Estilo para el título de la aplicación */
+.titulo-principal {
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-fill: black;              /* Para nodos tipo Text */
+    -fx-text-fill: black;         /* Por si usas Label */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 4,0.5,1,1 );
+    -fx-alignment: center;
+}

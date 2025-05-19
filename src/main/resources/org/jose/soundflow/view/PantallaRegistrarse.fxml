@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jose.soundflow.viewController.PantallaRegistrarseController">
+   <children>
+      <ImageView fitHeight="483.0" fitWidth="653.0" layoutX="-6.0" nodeOrientation="INHERIT" pickOnBounds="true">
+         <image>
+            <Image url="@../images/imagenfondo.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fitHeight="344.0" fitWidth="364.0" layoutX="149.0" layoutY="-92.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/logo2.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="usuarioText" layoutX="262.0" layoutY="153.0" prefHeight="45.0" prefWidth="185.0" promptText="Usuario">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="correoText" layoutX="261.0" layoutY="230.0" prefHeight="45.0" prefWidth="186.0" promptText="Correo">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="passwordText" layoutX="260.0" layoutY="309.0" prefHeight="45.0" prefWidth="187.0" promptText="Contraseña">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </PasswordField>
+      <ImageView fitHeight="45.0" fitWidth="52.0" layoutX="207.0" layoutY="153.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/inconoUser.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="207.0" layoutY="230.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/iconoCorreoUser.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="207.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/iconoContraseñaUser.png" />
+         </image>
+      </ImageView>
+      <Button id="botonRegistrarse" fx:id="registrarUsuario" layoutX="345.0" layoutY="389.0" mnemonicParsing="false" onAction="#registrarUsuario" prefHeight="34.0" prefWidth="139.0" styleClass="boton" stylesheets="@../estiloscss/styleBotones.css" text="Registrarse">
+         <font>
+            <Font size="33.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button id="botonAtrasRegistrarse" fx:id="volverAtrasBoton" layoutX="196.0" layoutY="389.0" mnemonicParsing="false" onAction="#volverAtrasBoton" prefHeight="34.0" prefWidth="112.0" styleClass="boton" stylesheets="@../estiloscss/styleBotones.css" text="Atras">
+         <font>
+            <Font size="34.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <ImageView fitHeight="60.0" fitWidth="45.0" layoutX="585.0" layoutY="14.0" onMouseClicked="#botonSalir" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/salir.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
