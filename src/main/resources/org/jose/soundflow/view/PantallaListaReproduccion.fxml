@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jose.soundflow.viewController.PantallaListaReproduccionController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jose.soundflow.viewController.PantallaListaReproduccionController">
    <children>
-      <Button layoutX="257.0" layoutY="116.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="139.0" layoutY="226.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="412.0" layoutY="275.0" mnemonicParsing="false" text="Button" />
+      <Label styleClass="titulo-principal" stylesheets="@../estiloscss/styleTitulo.css" text="Listas de Reproducción" />
+      <TableView fx:id="listaAudios" prefHeight="396.0" prefWidth="600.0" styleClass="label-formulario" stylesheets="@../estiloscss/styleLabel.css">
+        <columns>
+          <TableColumn fx:id="colNombre" prefWidth="353.2075190206326" text="Nombre Lista de Reproducción" />
+          <TableColumn fx:id="colVer" prefWidth="155.77362060546875" text="Ver Audios" />
+            <TableColumn fx:id="colEliminar" prefWidth="133.132080078125" text="Eliminar Lista" />
+        </columns>
+      </TableView>
+      <HBox alignment="CENTER" prefHeight="142.0" prefWidth="640.0" spacing="5.0">
+         <children>
+            <Button fx:id="botonAtras" mnemonicParsing="false" onAction="#botonAtras" styleClass="boton" stylesheets="@../estiloscss/styleBotones.css" text="Atras">
+               <HBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="botonCrearLista" mnemonicParsing="false" onAction="#botonCrearLista" styleClass="boton" stylesheets="@../estiloscss/styleBotones.css" text="Crear Lista">
+               <HBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </children>
-</AnchorPane>
+</VBox>

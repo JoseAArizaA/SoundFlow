@@ -2,6 +2,7 @@ package org.jose.soundflow.DAO;
 
 
 import org.jose.soundflow.baseDatos.ConnectionDB;
+import org.jose.soundflow.model.Audio;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RelacionListaAudioDAO {
-    private static final String SQL_INSERT = "INSERT INTO RelacionListaAudio (idLista, idAudio) VALUES (?, ?)";
+    private static final String SQL_INSERT = "INSERT INTO relacionlistaaudio (idLista, idAudio, fechaAgregada) VALUES (?, ?, CURDATE())";
     private static final String SQL_DELETE = "DELETE FROM RelacionListaAudio WHERE idLista = ? AND idAudio = ?";
     private static final String SQL_SELECT_AUDIOS_BY_LISTA = "SELECT idAudio FROM RelacionListaAudio WHERE idLista = ?";
     private static final String SQL_SELECT_LISTAS_BY_AUDIO = "SELECT idLista FROM RelacionListaAudio WHERE idAudio = ?";
@@ -70,5 +71,28 @@ public class RelacionListaAudioDAO {
             e.printStackTrace();
         }
         return listas;
+
+    }
+
+    public static List<Audio> findAudiosByListaId(int idLista) {
+        List<Audio> audios = new ArrayList<>();
+
+        try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_SELECT_AUDIOS_BY_LISTA)) {
+            pst.setInt(1, idLista);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                int idAudio = rs.getInt("idAudio");
+                Audio audio = AudioDAO.findById(idAudio);
+                if (audio != null) {
+                    audios.add(audio);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return audios;
     }
 }

@@ -68,7 +68,7 @@ public class UsuarioDAO {
 
                 // Cargar relaciones asociadas (EAGER)
                 usuario.setMisAudios(new ArrayList<>(AudioDAO.findAudiosByUsuarioEager(idUsuario)));
-                usuario.setMisListasReproduccion(new ArrayList<>(ListaReproduccionDAO.findByUsuarioId(idUsuario)));
+                usuario.setMisListasReproduccion(new ArrayList<>(ListaReproduccionDAO.findByUsuario(idUsuario)));
 
                 usuarios.add(usuario);
             }
@@ -118,7 +118,7 @@ public class UsuarioDAO {
 
                 // Cargar relaciones asociadas (EAGER)
                 usuario.setMisAudios(new ArrayList<>(AudioDAO.findAudiosByUsuarioEager(id)));
-                usuario.setMisListasReproduccion(new ArrayList<>(ListaReproduccionDAO.findByUsuarioId(id)));
+                usuario.setMisListasReproduccion(new ArrayList<>(ListaReproduccionDAO.findByUsuario(id)));
             }
         } catch (SQLException e) {
             e.printStackTrace();

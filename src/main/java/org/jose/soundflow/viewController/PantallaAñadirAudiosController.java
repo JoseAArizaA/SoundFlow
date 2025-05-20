@@ -90,7 +90,7 @@ public class PantallaAñadirAudiosController {
         int duracion = 0;
         try {
             duracion = Integer.parseInt(duracionTexto);
-            if (duracion <= 0 || duracion > 100) {
+            if (duracion <= 0) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Duración inválida");
                 alert.setHeaderText(null);
@@ -108,63 +108,67 @@ public class PantallaAñadirAudiosController {
         }
 
         Usuario usuario = Sesion.getUsuarioActual();
+        Audio audio = null;
 
-        Audio audio;
-
-        if (audioEditar != null) {
-            audio = audioEditar;
-        } else {
-            switch (tipo) {
-                case "Canción":
-                    audio = new Cancion();
-                    ((Cancion) audio).setGenero(extra);
-                    break;
-                case "Podcast":
-                    audio = new Podcast();
-                    ((Podcast) audio).setTematica(extra);
-                    break;
-                case "Audiolibro":
-                    audio = new AudioLibro();
-                    ((AudioLibro) audio).setIdioma(extra);
-                    break;
-                default:
-                    Alert alertTipo = new Alert(Alert.AlertType.ERROR);
-                    alertTipo.setTitle("Tipo no reconocido");
-                    alertTipo.setHeaderText(null);
-                    alertTipo.setContentText("El tipo de audio no es válido.");
-                    alertTipo.showAndWait();
-                    return;
+        if (puedeGuardar) {
+            if (audioEditar != null) {
+                audio = audioEditar;
+            } else {
+                switch (tipo) {
+                    case "Canción":
+                        audio = new Cancion();
+                        ((Cancion) audio).setGenero(extra);
+                        break;
+                    case "Podcast":
+                        audio = new Podcast();
+                        ((Podcast) audio).setTematica(extra);
+                        break;
+                    case "Audiolibro":
+                        audio = new AudioLibro();
+                        ((AudioLibro) audio).setIdioma(extra);
+                        break;
+                    default:
+                        puedeGuardar = false;
+                        Alert alertTipo = new Alert(Alert.AlertType.ERROR);
+                        alertTipo.setTitle("Tipo no reconocido");
+                        alertTipo.setHeaderText(null);
+                        alertTipo.setContentText("El tipo de audio no es válido.");
+                        alertTipo.showAndWait();
+                }
             }
         }
 
-        audio.setTitulo(titulo);
-        audio.setArtista(artista);
-        audio.setDescripcion(descripcion);
-        audio.setDuracion(duracion);
-        audio.setTipoAudio(org.jose.soundflow.utils.Utilidades.corregirEnum(tipo));
-        audio.setUsuario(usuario);
+        if (puedeGuardar && audio != null) {
+            audio.setTitulo(titulo);
+            audio.setArtista(artista);
+            audio.setDescripcion(descripcion);
+            audio.setDuracion(duracion);
+            audio.setTipoAudio(org.jose.soundflow.utils.Utilidades.corregirEnum(tipo));
+            audio.setUsuario(usuario);
 
-        boolean exito;
-        if (audioEditar != null) {
-            exito = AudioDAO.update(audio);
-        } else {
-            exito = AudioDAO.insertAudio(audio);
-        }
+            boolean exito;
+            if (audioEditar != null) {
+                exito = AudioDAO.update(audio);
+            } else {
+                exito = AudioDAO.insertAudio(audio);
+            }
 
-        Alert alert;
-        if (exito) {
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Guardado exitoso");
-            alert.setHeaderText(null);
-            alert.setContentText("Audio guardado correctamente");
-            limpiarCampos();
-        } else {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error al guardar");
-            alert.setHeaderText(null);
-            alert.setContentText("No se pudo guardar el audio");
+            Alert alert;
+            if (exito) {
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Guardado exitoso");
+                alert.setHeaderText(null);
+                alert.setContentText("Audio guardado correctamente");
+                limpiarCampos();
+            } else {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error al guardar");
+                alert.setHeaderText(null);
+                alert.setContentText("No se pudo guardar el audio");
+
+            }
+            alert.showAndWait();
         }
-        alert.showAndWait();
     }
 
 

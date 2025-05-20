@@ -81,14 +81,7 @@ public class Audio {
 
     @Override
     public String toString() {
-        return "Audio->" +
-                "idAudio:" + idAudio +
-                ", titulo:'" + titulo + '\'' +
-                ", artista:'" + artista + '\'' +
-                ", descripcion:'" + descripcion + '\'' +
-                ", duracion:" + duracion +
-                ", tipoAudio:" + tipoAudio +
-                ", usuario:" + usuario;
+        return titulo + " - " + artista;
     }
 
     @Override
