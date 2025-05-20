@@ -10,14 +10,17 @@ import java.util.List;
 
 public class UsuarioDAO {
     private static final String SQL_INSERT = "INSERT INTO Usuario (nombre, correo, password) VALUES (?, ?, ?)";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM Usuario";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM Usuario WHERE idUsuario = ?";
     private static final String SQL_UPDATE = "UPDATE Usuario SET nombre = ?, correo = ? WHERE idUsuario = ?";
     private static final String SQL_DELETE = "DELETE FROM Usuario WHERE idUsuario = ?";
     private static final String SQL_VALIDAR_USUARIO_COMPLETO = "SELECT * FROM Usuario WHERE nombre = ? AND password = ?";
 
 
-    // Crear (Insertar)
+    /**
+     * Insertar un nuevo usuario en la base de datos.
+     * @param usuario: Usuario que se va a insertar.
+     * @return: true si la inserción fue exitosa, false en caso contrario.
+     */
     public static boolean insert(Usuario usuario) {
         boolean resultado = false;
         Connection con = ConnectionDB.getConnection();
@@ -33,53 +36,11 @@ public class UsuarioDAO {
     }
 
 
-    // Leer todos
-    public static List<Usuario> findAll() {
-        List<Usuario> usuarios = new ArrayList<>();
-        Connection con = ConnectionDB.getConnection();
-        try (Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL_SELECT_ALL)) {
-            while (rs.next()) {
-                Usuario usuario = new Usuario();
-                usuario.setIdUsuario(rs.getInt("idUsuario"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setPassword(rs.getString("password"));
-                usuarios.add(usuario);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return usuarios;
-    }
-
-    public static List<Usuario> findAllEager() {
-        List<Usuario> usuarios = new ArrayList<>();
-        Connection con = ConnectionDB.getConnection();
-        try (Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL_SELECT_ALL)) {
-            while (rs.next()) {
-                Usuario usuario = new Usuario();
-                int idUsuario = rs.getInt("idUsuario");
-                usuario.setIdUsuario(idUsuario);
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setPassword(rs.getString("password"));
-
-                // Cargar relaciones asociadas (EAGER)
-                usuario.setMisAudios(new ArrayList<>(AudioDAO.findAudiosByUsuarioEager(idUsuario)));
-                usuario.setMisListasReproduccion(new ArrayList<>(ListaReproduccionDAO.findByUsuario(idUsuario)));
-
-                usuarios.add(usuario);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return usuarios;
-    }
-
-
-    //METODO PARA BUSCAR POR ID VERSION LAZY
+    /**
+     *  Buscar a un usuario por su ID VERSION LAZY.
+     * @param id: id del usuario
+     * @return: Usuario que se va a buscar
+     */
     public static Usuario findById(int id) {
         Usuario usuario = null;
         Connection con = ConnectionDB.getConnection();
@@ -100,7 +61,10 @@ public class UsuarioDAO {
     }
 
 
-    //METODO PARA BUSCAR POR ID VERSION EAGER
+    /**
+     * Buscar a un usuario por su ID VERSION EAGER.
+     * @return: Lista de usuarios.
+     */
     public static Usuario findByIdEager(int id) {
         Usuario usuario = null;
         Connection con = ConnectionDB.getConnection();
@@ -144,7 +108,11 @@ public class UsuarioDAO {
         return resultado;
     }
 
-    // Eliminar
+    /**
+     * Eliminar un usuario de la base de datos.
+     * @param id: id del usuario que se va a eliminar
+     * @return: true si la eliminación fue exitosa, false en caso contrario.
+     */
     public static boolean delete(int id) {
         boolean resultado = false;
 

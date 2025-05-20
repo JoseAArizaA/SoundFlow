@@ -14,10 +14,14 @@ public class RelacionListaAudioDAO {
     private static final String SQL_INSERT = "INSERT INTO relacionlistaaudio (idLista, idAudio, fechaAgregada) VALUES (?, ?, CURDATE())";
     private static final String SQL_DELETE = "DELETE FROM RelacionListaAudio WHERE idLista = ? AND idAudio = ?";
     private static final String SQL_SELECT_AUDIOS_BY_LISTA = "SELECT idAudio FROM RelacionListaAudio WHERE idLista = ?";
-    private static final String SQL_SELECT_LISTAS_BY_AUDIO = "SELECT idLista FROM RelacionListaAudio WHERE idAudio = ?";
 
 
-    // Insertar relación
+    /**
+     * Insertar una nueva relación entre una lista de reproducción y un audio.
+     * @param idLista: ID de la lista de reproducción.
+     * @param idAudio: ID del audio.
+     * @return: true si la inserción fue exitosa, false en caso contrario.
+     */
     public static boolean insert(int idLista, int idAudio) {
         boolean resultado = false;
         try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_INSERT)) {
@@ -30,7 +34,12 @@ public class RelacionListaAudioDAO {
         return resultado;
     }
 
-    // Eliminar relación
+    /**
+     * Eliminar una relación entre una lista de reproducción y un audio.
+     * @param idLista: ID de la lista de reproducción.
+     * @param idAudio: ID del audio.
+     * @return: true si la eliminación fue exitosa, false en caso contrario.
+     */
     public static boolean delete(int idLista, int idAudio) {
         boolean resultado = false;
         try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_DELETE)) {
@@ -43,37 +52,11 @@ public class RelacionListaAudioDAO {
         return resultado;
     }
 
-    // Buscar audios por lista
-    public static List<Integer> findAudiosByLista(int idLista) {
-        List<Integer> audios = new ArrayList<>();
-        try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_SELECT_AUDIOS_BY_LISTA)) {
-            pst.setInt(1, idLista);
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                audios.add(rs.getInt("idAudio"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return audios;
-    }
-
-    // Buscar listas por audio
-    public static List<Integer> findListasByAudio(int idAudio) {
-        List<Integer> listas = new ArrayList<>();
-        try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_SELECT_LISTAS_BY_AUDIO)) {
-            pst.setInt(1, idAudio);
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                listas.add(rs.getInt("idLista"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listas;
-
-    }
-
+    /**
+     * Buscar todos los audios asociados a una lista de reproducción.
+     * @param idLista: ID de la lista de reproducción.
+     * @return: Lista de audios asociados a la lista de reproducción.
+     */
     public static List<Audio> findAudiosByListaId(int idLista) {
         List<Audio> audios = new ArrayList<>();
 

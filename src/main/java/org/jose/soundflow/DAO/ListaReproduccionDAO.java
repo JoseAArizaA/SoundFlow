@@ -1,14 +1,11 @@
 package org.jose.soundflow.DAO;
 
 import org.jose.soundflow.baseDatos.ConnectionDB;
-import org.jose.soundflow.model.Audio;
 import org.jose.soundflow.model.ListaReproduccion;
-import org.jose.soundflow.model.TipoContenido;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +14,13 @@ import java.util.List;
           private static final String SQL_UPDATE = "UPDATE ListaReproduccion SET nombreLista = ?, idUsuario = ? WHERE idLista = ?";
           private static final String SQL_DELETE = "DELETE FROM ListaReproduccion WHERE idLista = ?";
           private static final String SQL_SELECT_BY_USUARIO = "SELECT * FROM ListaReproduccion WHERE idUsuario = ?";
-          private static final String SQL_SELECT_AUDIOS_BY_LISTA = "SELECT idAudio FROM RelacionListaAudio WHERE idLista = ?";
 
 
-          // Insertar nueva lista
+          /**
+           * Insertar una nueva lista de reproducción en la base de datos.
+           * @param lista: Lista que se va a insertar.
+           * @return: true si la inserción fue exitosa, false en caso contrario.
+           */
           public static boolean insert(ListaReproduccion lista) {
                boolean resultado = false;
                try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_INSERT)) {
@@ -33,7 +33,11 @@ import java.util.List;
                return resultado;
           }
 
-          // Actualizar lista
+          /**
+           * Actualizar una lista de reproducción existente en la base de datos.
+           * @param lista: Lista que se va a actualizar.
+           * @return: true si la actualización fue exitosa, false en caso contrario.
+           */
           public static boolean update(ListaReproduccion lista) {
                boolean resultado = false;
                try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_UPDATE)) {
@@ -47,7 +51,11 @@ import java.util.List;
                return resultado;
           }
 
-          // Eliminar lista por ID
+          /**
+           * Eliminar una lista de reproducción de la base de datos.
+           * @param id: ID de la lista que se va a eliminar.
+           * @return: true si la eliminación fue exitosa, false en caso contrario.
+           */
           public static boolean delete(int id) {
                boolean resultado = false;
                try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_DELETE)) {
@@ -59,7 +67,11 @@ import java.util.List;
                return resultado;
           }
 
-          // Obtener listas de un usuario
+          /**
+           * Buscar listas de reproducción por ID de usuario.
+           * @param idUsuario: ID del usuario cuyas listas se van a buscar.
+           * @return: Lista de listas de reproducción asociadas al usuario.
+           */
           public static List<ListaReproduccion> findByUsuario(int idUsuario) {
                List<ListaReproduccion> listas = new ArrayList<>();
                try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_SELECT_BY_USUARIO)) {

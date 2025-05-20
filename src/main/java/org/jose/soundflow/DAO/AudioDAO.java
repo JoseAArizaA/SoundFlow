@@ -26,7 +26,11 @@ public class AudioDAO {
     private static final String SQL_SELECT_IDIOMA = "SELECT idioma FROM audiolibro WHERE idAudio = ?";
 
 
-    //METODO INSERTAR
+    /**
+     * Insertar un nuevo audio y su tipo específico (canción, podcast o audiolibro) con su atributo correspondiente
+     * @param audio: objeto Audio a insertar
+     * @return: true si se ha insertado correctamente, false en caso contrario
+     **/
     public static boolean insertAudio(Audio audio) {
         boolean resultado = false;
         Connection con = ConnectionDB.getConnection();
@@ -76,7 +80,10 @@ public class AudioDAO {
     }
 
 
-    // Leer todos VERSION LAZY
+    /**
+     * Buscar todos los audios
+     * @return:Lista de Audio con los datos de todos los audios
+     */
     public static List<Audio> findAll() {
         List<Audio> audios = new ArrayList<>();
         Connection con = ConnectionDB.getConnection();
@@ -127,7 +134,11 @@ public class AudioDAO {
         return audios;
     }
 
-    // Leer por ID VERSION EAGER
+    /**
+     * Buscar por ID VERSION EAGER
+     * @param idUsuarioBuscado: id del audio a buscar
+     * @return: objeto Audio con los datos del audio encontrado, o null si no se encuentra
+     **/
     public static List<Audio> findAudiosByUsuarioEager(int idUsuarioBuscado) {
         List<Audio> audios = new ArrayList<>();
         Connection con = ConnectionDB.getConnection();
@@ -203,7 +214,11 @@ public class AudioDAO {
         return audios;
     }
 
-    // Leer por ID VERSION LAZY
+    /**
+     * Buscar por ID VERSION LAZY
+     * @param id: id del audio a buscar
+     * @return: objeto Audio con los datos del audio encontrado, o null si no se encuentra
+     */
     public static Audio findById(int id) {
         Audio audio = null;
         Connection con = ConnectionDB.getConnection();
@@ -226,7 +241,11 @@ public class AudioDAO {
         return audio;
     }
 
-    // Actualizar
+    /**
+     * Actualizar
+     * @param audio: objeto Audio a actualizar
+     * @return: true si se ha actualizado correctamente, false en caso contrario
+     **/
     public static boolean update(Audio audio) {
         boolean resultado = false;
         Connection con = ConnectionDB.getConnection();
@@ -246,8 +265,11 @@ public class AudioDAO {
     }
 
 
-
-    // Eliminar
+    /**
+     * Eliminar por ID
+     * @param id: ide del audio a eliminar
+     * @return: true si se ha eliminado correctamente, false en caso contrario
+     */
     public static boolean delete(int id) {
         boolean resultado = false;
         Connection con = ConnectionDB.getConnection();

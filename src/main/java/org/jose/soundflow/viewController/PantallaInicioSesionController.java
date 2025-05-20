@@ -22,6 +22,10 @@ public class PantallaInicioSesionController {
     @FXML
     private TextField passwordText;
 
+    /**
+     * Método que al pulsar al boton de atras vuelve a la pantalla de inicio
+     * @param actionEvent
+     */
     public void volverAtrasIniciarSesionBoton(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaInicio.fxml"));
@@ -35,6 +39,11 @@ public class PantallaInicioSesionController {
         }
     }
 
+    /**
+     * Método para iniciar sesión, muestra alertas si hay campos incompletos o si el usuario o la contrasñea son incorrectos.
+     * Si esta todo correcto se inicia la sesion y se cambia a la pantalla principal
+     * @param actionEvent
+     */
     public void iniciarSesion(ActionEvent actionEvent) {
         String nombre = usuarioText.getText();
         String password = passwordText.getText();

@@ -42,8 +42,10 @@ public class PantallaVerAudiosController {
     @FXML
     private Button botonBorrar;
 
+    /**
+     * Método que se ejecuta al iniciar la pantalla, configura las columnas y cargar los audios
+     */
     public void initialize() {
-        // Asociar las columnas normales
         colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colArtista.setCellValueFactory(new PropertyValueFactory<>("artista"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -62,10 +64,12 @@ public class PantallaVerAudiosController {
             }
             return valor;
         });
-        // Llenar la tabla con los audios del usuario
         cargarAudios();
     }
 
+    /**
+     * Método que carga los audios del usuario en la tabla
+     */
     private void cargarAudios() {
         Usuario usuario = Sesion.getUsuarioActual();
         List<Audio> lista = AudioDAO.findAudiosByUsuarioEager(usuario.getIdUsuario());
@@ -76,7 +80,10 @@ public class PantallaVerAudiosController {
 
 
 
-
+    /**
+     * Método que al pulsar al boton de atras vuelve a la pantalla principal
+     * @param actionEvent
+     */
     public void botonAtras(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PrincipalAplicacion.fxml"));
@@ -89,7 +96,10 @@ public class PantallaVerAudiosController {
         }
     }
 
-
+    /**
+     * Método que al pulsar al boton de editar abre la pantalla de añadir audios y permite editar los campos del audio
+     * @param actionEvent
+     */
     public void botonEditar(ActionEvent actionEvent) {
         Audio seleccionado = tablaAudios.getSelectionModel().getSelectedItem();
         if (seleccionado != null) {
@@ -97,11 +107,11 @@ public class PantallaVerAudiosController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaAñadirAudios.fxml"));
                 Parent root = loader.load();
 
-                // Enviar el audio al controlador
+
                 org.jose.soundflow.viewController.PantallaAñadirAudiosController controller = loader.getController();
                 controller.inicializarConAudio(seleccionado);
 
-                // Mostrar la ventana
+
                 Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
@@ -113,7 +123,10 @@ public class PantallaVerAudiosController {
     }
 
 
-
+    /**
+     * Método que al pulsar al boton de borrar elimina el audio seleccionado
+     * @param actionEvent
+     */
     public void botonBorrar(ActionEvent actionEvent) {
         Audio seleccionado = tablaAudios.getSelectionModel().getSelectedItem();
         if (seleccionado != null) {

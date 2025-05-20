@@ -11,7 +11,7 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jose.soundflow.viewController.PantallaAudiosListaController">
    <children>
-      <Label fx:id="labelTitulo" prefHeight="71.0" prefWidth="656.0" style="-fx-font-size: 33;">
+      <Label fx:id="labelTitulo" alignment="CENTER" prefHeight="71.0" prefWidth="656.0" style="-fx-font-size: 33;" stylesheets="@../estiloscss/styleLabel.css">
          <font>
             <Font size="1.0" />
          </font>

@@ -32,6 +32,10 @@ public class PantallaAñadirAudiosController {
     @FXML
     private Label labelExtra;
 
+    /**
+     * MÉtodo para que al cargar la pantalla para añadir audios el label y el campo de texto extra no se vean, tambien se pone el texto en el comboBox
+     * y segun el tipo que se seleccione se cambia el texto del label y se muestra el campo de texto extra
+     */
     public void initialize() {
         labelExtra.setVisible(false);
         txtExtra.setVisible(false);
@@ -56,7 +60,10 @@ public class PantallaAñadirAudiosController {
         });
     }
 
-
+    /**
+     * Método para volver a la pantalla anterior
+     * @param actionEvent
+     */
     public void botonAtras(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PrincipalAplicacion.fxml"));
@@ -69,6 +76,10 @@ public class PantallaAñadirAudiosController {
         }
     }
 
+    /**
+     * Método para guardar el audio en la base de datos
+     * @param actionEvent: evento de acción al pulsar el botón, tambien hay alertas si no se rellena correctamente o se dejan campos vacíos
+     */
     public void botonGuardar(ActionEvent actionEvent) {
         String titulo = txtTitulo.getText();
         String artista = txtArtista.getText();
@@ -171,7 +182,9 @@ public class PantallaAñadirAudiosController {
         }
     }
 
-
+    /**
+     * Método para limpiar los campos de texto cuando se añade un nuevo audio
+     */
     private void limpiarCampos() {
         txtTitulo.clear();
         txtArtista.clear();
@@ -184,7 +197,10 @@ public class PantallaAñadirAudiosController {
     }
 
     private Audio audioEditar;
-
+    /**
+     * Método para que al pulsar en editar se carguen los datos del audio en los campos
+     * @param audio: audio que se va a editar
+     */
     public void inicializarConAudio(Audio audio) {
         this.audioEditar = audio;
 

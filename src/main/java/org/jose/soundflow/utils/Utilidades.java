@@ -11,6 +11,11 @@ import org.jose.soundflow.model.TipoContenido;
 
 public class Utilidades {
 
+    /**
+     * Metodo para validar el correo electronico
+     * @param email: email que se va a validar
+     * @return: true si el correo es valido, false si no lo es
+     */
     public static boolean validarCorreo(String email) {
         boolean valido = false;
         if (!email.matches("^[\\w.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
@@ -21,7 +26,11 @@ public class Utilidades {
         return valido;
     }
 
-    // Método para mostrar un mensaje temporal
+    /**
+     * Metodo para mostrar un mensaje temporal(Aparece al iniciar Sesion)
+     * @param stage: Ventana donde se va a mostrar el mensaje
+     * @param mensaje: Mensaje que se va a mostrar
+     */
     public static void mostrarMensajeTemporal(Stage stage, String mensaje) {
         Popup popup = new Popup();
         Label label = new Label(mensaje);
@@ -45,6 +54,11 @@ public class Utilidades {
         delay.play();
     }
 
+    /**
+     * Metodo para corregir el enum de tipo de contenido
+     * @param tipo: Tipo del enum
+     * @return: Tipo todo en mayuscualas y sin caracteres especiales
+     */
     public static TipoContenido corregirEnum(String tipo) {
         return TipoContenido.valueOf(
                 tipo.toUpperCase()

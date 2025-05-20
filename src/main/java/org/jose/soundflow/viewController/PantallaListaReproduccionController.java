@@ -36,7 +36,7 @@ public class PantallaListaReproduccionController {
     private Button botonCrearLista;
 
     /**
-     * Se ejecuta al iniciar la pantalla.
+     * Se ejecuta al iniciar la pantalla y utiliza el metodo para configurar las columnas y cargar las listas de reproduccion
      */
     public void initialize() {
         configurarColumnas();
@@ -44,7 +44,7 @@ public class PantallaListaReproduccionController {
     }
 
     /**
-     * Configura las columnas de la tabla.
+     * Configura las columnas de la tabla de listas de reproducción. MEJORAR EXPLICACION
      */
     private void configurarColumnas() {
         // Nombre
@@ -119,7 +119,10 @@ public class PantallaListaReproduccionController {
 
 
 
-
+    /**
+     * Método que al pulsar al boton de atras vuelve a la pantalla principal
+     * @param actionEvent
+     */
     public void botonAtras(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PrincipalAplicacion.fxml"));
@@ -132,6 +135,10 @@ public class PantallaListaReproduccionController {
         }
     }
 
+    /**
+     * Método para crear una nueva lista de reproducción.
+     * @param actionEvent
+     */
     public void botonCrearLista(ActionEvent actionEvent) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Crear Lista");

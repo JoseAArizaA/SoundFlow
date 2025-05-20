@@ -16,7 +16,10 @@ public class PantallaInicioController {
     @FXML
     private Button cambiarInicioSesion;
 
-
+    /**
+     * Método para que al pulsar el boton de registrarse se cambie la pantalla a la de registro
+     * @param actionEvent
+     */
     public void cambiarRegistro(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaRegistrarse.fxml"));
@@ -32,6 +35,10 @@ public class PantallaInicioController {
         }
     }
 
+    /**
+     * Método para que al pulsar el boton de iniciar sesion se cambie la pantalla a la de inicio de sesion
+     * @param actionEvent
+     */
     public void cambiarInicioSesion(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaInicioSesion.fxml"));

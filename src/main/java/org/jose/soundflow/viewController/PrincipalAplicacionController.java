@@ -20,7 +20,10 @@ public class PrincipalAplicacionController {
     private Button botonSalir;
 
 
-
+    /**
+     * Método para que al pulsar el boton de ver audios se cambie la pantalla a la de ver audios
+     * @param actionEvent
+     */
     public void cambiarVerAudios(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaVerAudios.fxml"));
@@ -36,6 +39,10 @@ public class PrincipalAplicacionController {
         }
     }
 
+    /**
+     * Método para que al pulsar el boton de añadir audios se cambie la pantalla a la de añadir audios
+     * @param actionEvent
+     */
     public void cambairAñadirAudios(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaAñadirAudios.fxml"));
@@ -51,7 +58,10 @@ public class PrincipalAplicacionController {
         }
     }
 
-
+    /**
+     * Método para que al pulsar el boton de listas de reproduccion se cambie la pantalla a la de listas de reproduccion
+     * @param actionEvent
+     */
     public void cambiarListaReproduccion(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaListaReproduccion.fxml"));
@@ -67,6 +77,10 @@ public class PrincipalAplicacionController {
         }
     }
 
+    /**
+     * Método para cerrar la aplicación al pulsar el botón de salir
+     * @param actionEvent
+     */
     public void botonSalir(ActionEvent actionEvent) {
         System.exit(0);
     }

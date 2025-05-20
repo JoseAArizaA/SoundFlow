@@ -24,6 +24,11 @@ public class PantallaRegistrarseController {
     @FXML
     private TextField correoText;
 
+    /**
+     * Método para registrar un nuevo usuario y guardarlo en la base de datos. Muestra alertas si hay campos incompletos o errores
+     * y muestra un mensaje si el usuario se registra
+     * @param actionEvent
+     */
     public void registrarUsuario(ActionEvent actionEvent) {
         String nombre = usuarioText.getText();
         String correo = correoText.getText();
@@ -73,6 +78,10 @@ public class PantallaRegistrarseController {
         }
     }
 
+    /**
+     * Método que al pulsar al boton de atras vuelve a la pantalla de inicio
+     * @param actionEvent
+     */
     public void volverAtrasBoton(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaInicio.fxml"));
@@ -86,6 +95,10 @@ public class PantallaRegistrarseController {
         }
     }
 
+    /**
+     * Método para cerrar la aplicación al pulsar el botón de salir
+     * @param mouseEvent
+     */
     public void botonSalir(MouseEvent mouseEvent) {
        stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
        stage.close();

@@ -40,6 +40,10 @@ public class PantallaAudiosListaController {
     private ListaReproduccion listaSeleccionada;
 
     @FXML
+    /**
+     * // Método que se ejecuta al inicializar el controlador.
+     * Configura las columnas de la tabla para mostrar los datos de los audios
+     */
     public void initialize() {
         colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colArtista.setCellValueFactory(new PropertyValueFactory<>("artista"));
@@ -48,6 +52,10 @@ public class PantallaAudiosListaController {
     }
 
 
+    /**
+     * Método que al pulsar al boton de atras vuelve a la pantalla de listas de reproduccion
+     * @param actionEvent
+     */
     public void botonAtras(ActionEvent actionEvent) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/jose/soundflow/view/PantallaListaReproduccion.fxml"));
@@ -60,6 +68,12 @@ public class PantallaAudiosListaController {
         }
     }
 
+    /**
+     * Configura la columna `colEliminar` para cada fila de la tabla.
+     * Crea un botón con un icono de papelera que permite eliminar el audio de la lista actual.
+     * Al pulsarlo, llama al DAO para borrar la relación entre audio y lista,
+     * y recarga la tabla si la eliminación fue exitosa.
+     */
     private void configurarColumnaEliminar() {
         colEliminar.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("🗑");
@@ -83,6 +97,12 @@ public class PantallaAudiosListaController {
     }
 
 
+    /**
+     * Método ejecutado al pulsar el botón "Añadir".
+     * Añade el audio seleccionado en el ComboBox `comboAudiosDisponibles` a la lista de reproducción actual.
+     * Si se añade correctamente, recarga la tabla y limpia la selección del ComboBox.
+     * @param actionEvent
+     */
     public void botonAñadir(ActionEvent actionEvent) {
         Audio audioSeleccionado = comboAudiosDisponibles.getValue();
         if (audioSeleccionado != null) {
@@ -95,9 +115,14 @@ public class PantallaAudiosListaController {
     }
 
 
+    /**
+     * Carga los audios pertenecientes a una lista de reproducción específica.
+     * - Llama a `cargarAudiosDisponibles()` para actualizar el ComboBox con los audios que no están en la lista.
+     * @param lista la lista de reproducción seleccionada
+     */
     public void cargarCancionesDeLista(ListaReproduccion lista) {
         this.listaSeleccionada = lista;
-        labelTitulo.setText("Audios en la lista \" + lista.getNombreLista() + \"");
+        labelTitulo.setText("Audios en la lista: " + lista.getNombreLista());
 
         List<Audio> audiosDeLista = RelacionListaAudioDAO.findAudiosByListaId(lista.getIdLista());
         tablaAudios.setItems(FXCollections.observableArrayList(audiosDeLista));
@@ -106,6 +131,10 @@ public class PantallaAudiosListaController {
         cargarAudiosDisponibles();
     }
 
+    /**
+     * Carga en el ComboBox los audios que no están actualmente en la lista seleccionada.
+     * Configura cómo se visualizan los elementos del ComboBox.
+     */
     private void cargarAudiosDisponibles() {
         List<Audio> todos = AudioDAO.findAll();
         List<Audio> enLista = RelacionListaAudioDAO.findAudiosByListaId(listaSeleccionada.getIdLista());
