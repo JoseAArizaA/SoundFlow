@@ -5,8 +5,8 @@ public class Podcast extends Audio{
 
     public Podcast() {}
 
-    public Podcast(int idAudio, String titulo, String artista, String descripcion, int duracion, TipoContenido tipoAudio, Usuario usuario, String tematica) {
-        super(idAudio, titulo, artista, descripcion, duracion, tipoAudio, usuario);
+    public Podcast(int idAudio, String titulo, String artista, String descripcion, int duracion, Usuario usuario, String tematica) {
+        super(idAudio, titulo, artista, descripcion, duracion, usuario);
         this.tematica = tematica;
     }
 

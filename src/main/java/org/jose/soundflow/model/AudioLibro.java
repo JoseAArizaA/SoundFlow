@@ -5,8 +5,8 @@ public class AudioLibro extends Audio{
 
     public AudioLibro() {}
 
-    public AudioLibro(int idAudio, String titulo, String artista, String descripcion, int duracion, TipoContenido tipoAudio, Usuario usuario, String idioma) {
-        super(idAudio, titulo, artista, descripcion, duracion, tipoAudio, usuario);
+    public AudioLibro(int idAudio, String titulo, String artista, String descripcion, int duracion, Usuario usuario, String idioma) {
+        super(idAudio, titulo, artista, descripcion, duracion, usuario);
         this.idioma = idioma;
     }
 

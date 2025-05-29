@@ -1,5 +1,6 @@
 package org.jose.soundflow.viewController;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -8,9 +9,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.jose.soundflow.DAO.AudioDAO;
+import org.jose.soundflow.DAO.ListaReproduccionDAO;
 import org.jose.soundflow.DAO.RelacionListaAudioDAO;
 import org.jose.soundflow.model.*;
 
@@ -23,17 +24,17 @@ public class PantallaAudiosListaController {
     @FXML
     private Label labelTitulo;
     @FXML
-    private TableView<Audio> tablaAudios;
+    private TableView<RelacionListaAudio> tablaAudios;
     @FXML
-    private TableColumn<Audio, String> colTitulo;
+    private TableColumn<RelacionListaAudio, String> colTitulo;
     @FXML
-    private TableColumn<Audio, String> colArtista;
+    private TableColumn<RelacionListaAudio, String> colArtista;
     @FXML
-    private TableColumn<Audio, Integer> colDuracion;
+    private TableColumn<RelacionListaAudio, Integer> colDuracion;
     @FXML
-    private TableColumn<Audio, String> colTipo;
+    private TableColumn<RelacionListaAudio, String> colTipo;
     @FXML
-    private TableColumn<Audio, Void>  colEliminar;
+    private TableColumn<RelacionListaAudio, Void>  colEliminar;
     @FXML
     private ComboBox<Audio> comboAudiosDisponibles;
 
@@ -44,11 +45,16 @@ public class PantallaAudiosListaController {
      * // Método que se ejecuta al inicializar el controlador.
      * Configura las columnas de la tabla para mostrar los datos de los audios
      */
-    public void initialize() {
-        colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
-        colArtista.setCellValueFactory(new PropertyValueFactory<>("artista"));
-        colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
-        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipoAudio"));
+        // Cambios 28/05
+        public void initialize() {
+        colTitulo.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getAudio().getTitulo()));
+        colArtista.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getAudio().getArtista()));
+        colDuracion.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(cellData.getValue().getAudio().getDuracion()).asObject());
+        colTipo.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getAudio().getTipoComoTexto()));
     }
 
 
@@ -77,10 +83,11 @@ public class PantallaAudiosListaController {
     private void configurarColumnaEliminar() {
         colEliminar.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("🗑");
-
             {
                 btn.setOnAction(event -> {
-                    Audio audio = getTableView().getItems().get(getIndex());
+                    // Cambios 28/05
+                    RelacionListaAudio relacion = getTableView().getItems().get(getIndex());
+                    Audio audio = relacion.getAudio();
                     if (audio != null) {
                         boolean eliminado = RelacionListaAudioDAO.delete(listaSeleccionada.getIdLista(), audio.getIdAudio());
                         if (eliminado) cargarCancionesDeLista(listaSeleccionada);
@@ -108,7 +115,9 @@ public class PantallaAudiosListaController {
         if (audioSeleccionado != null) {
             boolean insertado = RelacionListaAudioDAO.insert(listaSeleccionada.getIdLista(), audioSeleccionado.getIdAudio());
             if (insertado) {
-                cargarCancionesDeLista(listaSeleccionada);
+                // Cambios 28/05
+                ListaReproduccion actualizada = ListaReproduccionDAO.findById(listaSeleccionada.getIdLista());
+                cargarCancionesDeLista(actualizada);
                 comboAudiosDisponibles.getSelectionModel().clearSelection();
             }
         }
@@ -124,8 +133,10 @@ public class PantallaAudiosListaController {
         this.listaSeleccionada = lista;
         labelTitulo.setText("Audios en la lista: " + lista.getNombreLista());
 
-        List<Audio> audiosDeLista = RelacionListaAudioDAO.findAudiosByListaId(lista.getIdLista());
-        tablaAudios.setItems(FXCollections.observableArrayList(audiosDeLista));
+        // Cambios 28/05
+        List<RelacionListaAudio> relaciones = RelacionListaAudioDAO.findByListaId(lista.getIdLista());
+        lista.setRelaciones(new ArrayList<>(relaciones));
+        tablaAudios.setItems(FXCollections.observableArrayList(relaciones));
 
         configurarColumnaEliminar();
         cargarAudiosDisponibles();

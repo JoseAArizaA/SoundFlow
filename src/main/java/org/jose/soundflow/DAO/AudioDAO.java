@@ -9,21 +9,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class AudioDAO {
-    private static final String SQL_SELECT_ALL = "SELECT * FROM Audio";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM audio";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM Audio WHERE idAudio = ?";
-    private static final String SQL_UPDATE = "UPDATE Audio SET titulo = ?, artista = ?, descripcion = ?, duracion = ?, tipoAudio = ?, idUsuario = ? WHERE idAudio = ?";
+    private static final String SQL_UPDATE = "UPDATE audio SET titulo = ?, artista = ?, descripcion = ?, duracion = ?, idUsuario = ? WHERE idAudio = ?";
     private static final String SQL_DELETE = "DELETE FROM Audio WHERE idAudio = ?";
 
-    private static final String SQL_INSERT_AUDIO = "INSERT INTO audio (titulo, artista, descripcion, duracion, tipoAudio, idUsuario) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT_AUDIO = "INSERT INTO audio (titulo, artista, descripcion, duracion, idUsuario) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_INSERT_CANCION = "INSERT INTO cancion (idAudio, genero) VALUES (?, ?)";
     private static final String SQL_INSERT_PODCAST = "INSERT INTO podcast (idAudio, tematica) VALUES (?, ?)";
     private static final String SQL_INSERT_AUDIOLIBRO = "INSERT INTO audiolibro (idAudio, idioma) VALUES (?, ?)";
 
     private static final String SQL_SELECT_BY_USUARIO = "SELECT * FROM audio WHERE idUsuario = ?";
-    private static final String SQL_SELECT_GENERO = "SELECT genero FROM cancion WHERE idAudio = ?";
-    private static final String SQL_SELECT_TEMATICA = "SELECT tematica FROM podcast WHERE idAudio = ?";
-    private static final String SQL_SELECT_IDIOMA = "SELECT idioma FROM audiolibro WHERE idAudio = ?";
+
+    //Cambios 28/05
+    private static final String SQL_EXISTE_EN_TABLA_CANCION = "SELECT 1 FROM cancion WHERE idAudio = ?";
+    private static final String SQL_EXISTE_EN_TABLA_PODCAST = "SELECT 1 FROM podcast WHERE idAudio = ?";
+    private static final String SQL_EXISTE_EN_TABLA_AUDIOLIBRO = "SELECT 1 FROM audiolibro WHERE idAudio = ?";
+
+    private static final String SQL_CAMPO_EXTRA_CANCION = "SELECT genero FROM cancion WHERE idAudio = ?";
+    private static final String SQL_CAMPO_EXTRA_PODCAST = "SELECT tematica FROM podcast WHERE idAudio = ?";
+    private static final String SQL_CAMPO_EXTRA_AUDIOLIBRO = "SELECT idioma FROM audiolibro WHERE idAudio = ?";
+
+
 
 
     /**
@@ -40,8 +49,7 @@ public class AudioDAO {
             pst.setString(2, audio.getArtista());
             pst.setString(3, audio.getDescripcion());
             pst.setInt(4, audio.getDuracion());
-            pst.setString(5, audio.getTipoAudio().name());
-            pst.setInt(6, audio.getUsuario().getIdUsuario());
+            pst.setInt(5, audio.getUsuario().getIdUsuario());
 
             int filas = pst.executeUpdate();
 
@@ -84,21 +92,18 @@ public class AudioDAO {
      * Buscar todos los audios
      * @return:Lista de Audio con los datos de todos los audios
      */
+    // Cambios 28/05
     public static List<Audio> findAll() {
         List<Audio> audios = new ArrayList<>();
         Connection con = ConnectionDB.getConnection();
         try (Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(SQL_SELECT_ALL)) {
             while (rs.next()) {
-                Audio audio = new Audio();
-                audio.setIdAudio(rs.getInt("idAudio"));
-                audio.setTitulo(rs.getString("titulo"));
-                audio.setArtista(rs.getString("artista"));
-                audio.setDescripcion(rs.getString("descripcion"));
-                audio.setDuracion(rs.getInt("duracion"));
-                audio.setTipoAudio(TipoContenido.valueOf(rs.getString("tipoAudio")));
-                audio.setUsuario(null); // Lazy: no se carga el usuario
-                audios.add(audio);
+                int idAudio = rs.getInt("idAudio");
+                Audio audio = findById(idAudio);
+                if (audio != null) {
+                    audios.add(audio);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,12 +124,15 @@ public class AudioDAO {
                 audio.setArtista(rs.getString("artista"));
                 audio.setDescripcion(rs.getString("descripcion"));
                 audio.setDuracion(rs.getInt("duracion"));
-                audio.setTipoAudio(TipoContenido.valueOf(rs.getString("tipoAudio")));
 
                 // Cargar el usuario asociado (EAGER)
                 int idUsuario = rs.getInt("idUsuario");
                 Usuario usuario = UsuarioDAO.findByIdEager(idUsuario);
                 audio.setUsuario(usuario);
+
+                //Cargar las relaciones
+                ArrayList<RelacionListaAudio> relaciones = new ArrayList<>(RelacionListaAudioDAO.findByIdAudio(audio.getIdAudio()));
+                audio.setRelaciones(relaciones);
 
                 audios.add(audio);
             }
@@ -148,61 +156,37 @@ public class AudioDAO {
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                Audio audio;
-                String tipo = rs.getString("tipoAudio");
                 int idAudio = rs.getInt("idAudio");
+                String titulo = rs.getString("titulo");
+                String artista = rs.getString("artista");
+                String descripcion = rs.getString("descripcion");
+                int duracion = rs.getInt("duracion");
 
-                switch (tipo.toUpperCase()) {
-                    case "CANCION":
-                        audio = new Cancion();
-                        try (PreparedStatement pst2 = con.prepareStatement(SQL_SELECT_GENERO)) {
-                            pst2.setInt(1, idAudio);
-                            ResultSet rs2 = pst2.executeQuery();
-                            if (rs2.next()) {
-                                ((Cancion) audio).setGenero(rs2.getString("genero"));
-                            }
-                        }
-                        break;
+                Audio audio;
 
-                    case "PODCAST":
-                        audio = new Podcast();
-                        try (PreparedStatement pst2 = con.prepareStatement(SQL_SELECT_TEMATICA)) {
-                            pst2.setInt(1, idAudio);
-                            ResultSet rs2 = pst2.executeQuery();
-                            if (rs2.next()) {
-                                ((Podcast) audio).setTematica(rs2.getString("tematica"));
-                            }
-                        }
-                        break;
-
-                    case "AUDIOLIBRO":
-                        audio = new AudioLibro();
-                        try (PreparedStatement pst2 = con.prepareStatement(SQL_SELECT_IDIOMA)) {
-                            pst2.setInt(1, idAudio);
-                            ResultSet rs2 = pst2.executeQuery();
-                            if (rs2.next()) {
-                                ((AudioLibro) audio).setIdioma(rs2.getString("idioma"));
-                            }
-                        }
-                        break;
-
-                    default:
-                        audio = new Audio();
-                        break;
+                if (existeEnLaTabla("cancion", idAudio)) {
+                    Cancion c = new Cancion();
+                    c.setGenero(getCampoExtra("cancion", "genero", idAudio));
+                    audio = c;
+                } else if (existeEnLaTabla("podcast", idAudio)) {
+                    Podcast p = new Podcast();
+                    p.setTematica(getCampoExtra("podcast", "tematica", idAudio));
+                    audio = p;
+                } else if (existeEnLaTabla("audiolibro", idAudio)) {
+                    AudioLibro al = new AudioLibro();
+                    al.setIdioma(getCampoExtra("audiolibro", "idioma", idAudio));
+                    audio = al;
+                } else {
+                    audio = new Audio();
                 }
 
-                // Campos comunes
+                // Datos comunes
                 audio.setIdAudio(idAudio);
-                audio.setTitulo(rs.getString("titulo"));
-                audio.setArtista(rs.getString("artista"));
-                audio.setDescripcion(rs.getString("descripcion"));
-                audio.setDuracion(rs.getInt("duracion"));
-
-                try {
-                    audio.setTipoAudio(TipoContenido.valueOf(tipo));
-                } catch (IllegalArgumentException e) {
-                    throw new EnumIncorrectoException("El tipo tiene que ser CANCION, PODCAST o AUDIOLIBRO y estar en mayúsculas.");
-                }
+                audio.setTitulo(titulo);
+                audio.setArtista(artista);
+                audio.setDescripcion(descripcion);
+                audio.setDuracion(duracion);
+                audio.setUsuario(UsuarioDAO.findById(idUsuarioBuscado));
 
                 audios.add(audio);
             }
@@ -213,6 +197,60 @@ public class AudioDAO {
 
         return audios;
     }
+
+    // Cambios 28/05
+    private static boolean existeEnLaTabla(String tabla, int idAudio) {
+        String sql;
+
+        if (tabla.equals("cancion")) {
+            sql = SQL_EXISTE_EN_TABLA_CANCION;
+        } else if (tabla.equals("podcast")) {
+            sql = SQL_EXISTE_EN_TABLA_PODCAST;
+        } else if (tabla.equals("audiolibro")) {
+            sql = SQL_EXISTE_EN_TABLA_AUDIOLIBRO;
+        } else {
+            throw new IllegalArgumentException("Tabla no válida: " + tabla);
+        }
+
+        try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(sql)) {
+            pst.setInt(1, idAudio);
+            ResultSet rs = pst.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    //Cambios 28/05
+    private static String getCampoExtra(String tabla, String campo, int idAudio) {
+        String sql;
+
+        if (tabla.equals("cancion")) {
+            sql = SQL_CAMPO_EXTRA_CANCION;
+        } else if (tabla.equals("podcast")) {
+            sql = SQL_CAMPO_EXTRA_PODCAST;
+        } else if (tabla.equals("audiolibro")) {
+            sql = SQL_CAMPO_EXTRA_AUDIOLIBRO;
+        } else {
+            throw new IllegalArgumentException("Tabla no válida: " + tabla);
+        }
+
+        try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(sql)) {
+            pst.setInt(1, idAudio);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+
+
 
     /**
      * Buscar por ID VERSION LAZY
@@ -232,7 +270,6 @@ public class AudioDAO {
                 audio.setArtista(rs.getString("artista"));
                 audio.setDescripcion(rs.getString("descripcion"));
                 audio.setDuracion(rs.getInt("duracion"));
-                audio.setTipoAudio(TipoContenido.valueOf(rs.getString("tipoAudio")));
                 audio.setUsuario(null); // Lazy: no se carga el usuario
             }
         } catch (SQLException e) {
@@ -240,6 +277,54 @@ public class AudioDAO {
         }
         return audio;
     }
+
+    public static Audio findByIdEagerSinUsuario(int id) {
+        Audio audio = null;
+        Connection con = ConnectionDB.getConnection();
+
+        try (PreparedStatement pst = con.prepareStatement(SQL_SELECT_BY_ID)) {
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                int idAudio = rs.getInt("idAudio");
+                String titulo = rs.getString("titulo");
+                String artista = rs.getString("artista");
+                String descripcion = rs.getString("descripcion");
+                int duracion = rs.getInt("duracion");
+
+                if (existeEnLaTabla("cancion", idAudio)) {
+                    Cancion c = new Cancion();
+                    c.setGenero(getCampoExtra("cancion", "genero", idAudio));
+                    audio = c;
+                } else if (existeEnLaTabla("podcast", idAudio)) {
+                    Podcast p = new Podcast();
+                    p.setTematica(getCampoExtra("podcast", "tematica", idAudio));
+                    audio = p;
+                } else if (existeEnLaTabla("audiolibro", idAudio)) {
+                    AudioLibro a = new AudioLibro();
+                    a.setIdioma(getCampoExtra("audiolibro", "idioma", idAudio));
+                    audio = a;
+                } else {
+                    audio = new Audio(); // tipo desconocido
+                }
+
+                // Setear atributos comunes
+                audio.setIdAudio(idAudio);
+                audio.setTitulo(titulo);
+                audio.setArtista(artista);
+                audio.setDescripcion(descripcion);
+                audio.setDuracion(duracion);
+                audio.setUsuario(null); // ⚠ NO cargar usuario para evitar bucles
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return audio;
+    }
+
 
     /**
      * Actualizar
@@ -254,9 +339,8 @@ public class AudioDAO {
             pst.setString(2, audio.getArtista());
             pst.setString(3, audio.getDescripcion());
             pst.setInt(4, audio.getDuracion());
-            pst.setString(5, audio.getTipoAudio().name());
-            pst.setInt(6, audio.getUsuario().getIdUsuario());
-            pst.setInt(7, audio.getIdAudio());
+            pst.setInt(5, audio.getUsuario().getIdUsuario());
+            pst.setInt(6, audio.getIdAudio());
             resultado = pst.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,11 +1,14 @@
 package org.jose.soundflow.DAO;
 
 import org.jose.soundflow.baseDatos.ConnectionDB;
+import org.jose.soundflow.model.Audio;
 import org.jose.soundflow.model.ListaReproduccion;
+import org.jose.soundflow.model.RelacionListaAudio;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,9 @@ import java.util.List;
           private static final String SQL_UPDATE = "UPDATE ListaReproduccion SET nombreLista = ?, idUsuario = ? WHERE idLista = ?";
           private static final String SQL_DELETE = "DELETE FROM ListaReproduccion WHERE idLista = ?";
           private static final String SQL_SELECT_BY_USUARIO = "SELECT * FROM ListaReproduccion WHERE idUsuario = ?";
+          // Cambios 28/05
+          private static final String SQL_SELECT_BY_ID_LISTA = "SELECT * FROM ListaReproduccion WHERE idLista = ?";
+          private static final String SQL_SELECT_BY_ID_AUDIO = "SELECT * FROM relacionListaAudio WHERE idAudio = ?";
 
 
           /**
@@ -79,15 +85,64 @@ import java.util.List;
                     ResultSet rs = pst.executeQuery();
                     while (rs.next()) {
                          ListaReproduccion lista = new ListaReproduccion();
-                         lista.setIdLista(rs.getInt("idLista"));
+                         //Cambios
+                         int idLista = rs.getInt("idLista");
+                         lista.setIdLista(idLista);
+
                          lista.setNombreLista(rs.getString("nombreLista"));
                          lista.setUsuario(UsuarioDAO.findById(idUsuario));
+
+                         List<RelacionListaAudio> relaciones = RelacionListaAudioDAO.findByListaId(idLista);
+                         lista.setRelaciones(new ArrayList<>(relaciones));
+
                          listas.add(lista);
                     }
                } catch (SQLException e) {
                     e.printStackTrace();
                }
                return listas;
+          }
+
+          public static ListaReproduccion findById(int idLista) {
+               ListaReproduccion lista = null;
+               try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_SELECT_BY_ID_LISTA)) {
+                    pst.setInt(1, idLista);
+                    ResultSet rs = pst.executeQuery();
+                    if (rs.next()) {
+                         lista = new ListaReproduccion();
+                         lista.setIdLista(rs.getInt("idLista"));
+                         lista.setNombreLista(rs.getString("nombreLista"));
+                         lista.setUsuario(UsuarioDAO.findById(rs.getInt("idUsuario")));
+
+                         List<RelacionListaAudio> relaciones = RelacionListaAudioDAO.findByListaId(idLista);
+                         lista.setRelaciones(new ArrayList<>(relaciones));
+                    }
+               } catch (SQLException e) {
+                    e.printStackTrace();
+               }
+               return lista;
+          }
+
+          public static List<RelacionListaAudio> findByIdAudio(int idAudio) {
+               List<RelacionListaAudio> relaciones = new ArrayList<>();
+               try (PreparedStatement pst = ConnectionDB.getConnection().prepareStatement(SQL_SELECT_BY_ID_AUDIO)) {
+                    pst.setInt(1, idAudio);
+                    ResultSet rs = pst.executeQuery();
+                    if (rs.next()) {
+                         int idLista = rs.getInt("idLista");
+                         ListaReproduccion lista = new ListaReproduccion();
+                         lista.setIdLista(idLista);
+
+                         Audio audio = AudioDAO.findByIdEagerSinUsuario(idAudio);
+                         LocalDate fechaAgregada = rs.getDate("fechaAgregada").toLocalDate();
+
+                         RelacionListaAudio relacion = new RelacionListaAudio(lista, audio, fechaAgregada);
+                         relaciones.add(relacion);
+                    }
+               } catch (SQLException e) {
+                    e.printStackTrace();
+               }
+               return relaciones;
           }
 
      }

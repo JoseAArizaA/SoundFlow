@@ -7,15 +7,15 @@ public class ListaReproduccion {
     private int idLista;
     private String nombreLista;
     private Usuario usuario;
-    private ArrayList<Audio> audios;
+    private ArrayList<RelacionListaAudio> relaciones;
 
     public ListaReproduccion() {}
 
-    public ListaReproduccion(int idLista, String nombreLista, Usuario usuario) {
+    public ListaReproduccion(int idLista, String nombreLista, Usuario usuario, ArrayList<RelacionListaAudio> relaciones) {
         this.idLista = idLista;
         this.nombreLista = nombreLista;
         this.usuario = usuario;
-        this.audios = new ArrayList<>();
+        this.relaciones = relaciones;
     }
 
     public int getIdLista() {
@@ -42,12 +42,12 @@ public class ListaReproduccion {
         this.usuario = usuario;
     }
 
-    public ArrayList<Audio> getAudios() {
-        return audios;
+    public ArrayList<RelacionListaAudio> getRelaciones() {
+        return relaciones;
     }
 
-    public void setAudios(ArrayList<Audio> audios) {
-        this.audios = audios;
+    public void setRelaciones(ArrayList<RelacionListaAudio> relaciones) {
+        this.relaciones = relaciones;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ListaReproduccion {
                 "idLista=" + idLista +
                 ", nombreLista='" + nombreLista + '\'' +
                 ", usuario=" + usuario +
-                ", audios=" + audios +
+                ", relaciones=" + relaciones +
                 '}';
     }
 

@@ -45,25 +45,27 @@ public class PantallaVerAudiosController {
     /**
      * Método que se ejecuta al iniciar la pantalla, configura las columnas y cargar los audios
      */
+    // Cambios 28/05
     public void initialize() {
         colTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colArtista.setCellValueFactory(new PropertyValueFactory<>("artista"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
-        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipoAudio"));
+        colTipo.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTipoComoTexto()));
         colExtra.setCellValueFactory(cellData -> {
             Audio audio = cellData.getValue();
-            StringProperty valor = new SimpleStringProperty();
-
             if (audio instanceof Cancion) {
-                valor.set(((Cancion) audio).getGenero());
+                return new SimpleStringProperty(((Cancion) audio).getGenero());
             } else if (audio instanceof Podcast) {
-                valor.set(((Podcast) audio).getTematica());
+                return new SimpleStringProperty(((Podcast) audio).getTematica());
             } else if (audio instanceof AudioLibro) {
-                valor.set(((AudioLibro) audio).getIdioma());
+                return new SimpleStringProperty(((AudioLibro) audio).getIdioma());
+            } else {
+                return new SimpleStringProperty("");
             }
-            return valor;
         });
+
         cargarAudios();
     }
 

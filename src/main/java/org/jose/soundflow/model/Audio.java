@@ -1,5 +1,8 @@
 package org.jose.soundflow.model;
 
+import org.jose.soundflow.DAO.RelacionListaAudioDAO;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Audio {
@@ -8,19 +11,31 @@ public class Audio {
     private String artista;
     private String descripcion;
     private int duracion;
-    private TipoContenido tipoAudio;
     private Usuario usuario;
+    private ArrayList<RelacionListaAudio> relaciones;
 
     public Audio() {}
 
-    public Audio(int idAudio, String titulo, String artista, String descripcion, int duracion, TipoContenido tipoAudio, Usuario usuario) {
+    public Audio(int idAudio, String titulo, String artista, String descripcion, int duracion, Usuario usuario, ArrayList<RelacionListaAudio> relaciones) {
         this.idAudio = idAudio;
         this.titulo = titulo;
         this.artista = artista;
         this.descripcion = descripcion;
         this.duracion = duracion;
-        this.tipoAudio = tipoAudio;
         this.usuario = usuario;
+        this.relaciones = relaciones;
+    }
+
+    //Nuevo constructor
+    public Audio(int idAudio, String titulo, String artista, String descripcion,
+                 int duracion, Usuario usuario) {
+        this.idAudio = idAudio;
+        this.titulo = titulo;
+        this.artista = artista;
+        this.descripcion = descripcion;
+        this.duracion = duracion;
+        this.usuario = usuario;
+        this.relaciones = new ArrayList<>(); // lo inicializa vacío
     }
 
     public int getIdAudio() {
@@ -63,20 +78,33 @@ public class Audio {
         this.duracion = duracion;
     }
 
-    public TipoContenido getTipoAudio() {
-        return tipoAudio;
-    }
-
-    public void setTipoAudio(TipoContenido tipoAudio) {
-        this.tipoAudio = tipoAudio;
-    }
-
     public Usuario getUsuario() {
         return usuario;
     }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public ArrayList<RelacionListaAudio> getRelaciones() {
+        return relaciones;
+    }
+
+    public void setRelaciones(ArrayList<RelacionListaAudio> relaciones) {
+        this.relaciones = relaciones;
+    }
+
+    // Cambios 28/05
+    public String getTipoComoTexto() {
+        if (this instanceof Cancion) {
+            return "Canción";
+        } else if (this instanceof Podcast) {
+            return "Podcast";
+        } else if (this instanceof AudioLibro) {
+            return "Audiolibro";
+        } else {
+            return "Desconocido";
+        }
     }
 
     @Override

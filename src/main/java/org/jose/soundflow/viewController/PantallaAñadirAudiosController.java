@@ -80,6 +80,7 @@ public class PantallaAñadirAudiosController {
      * Método para guardar el audio en la base de datos
      * @param actionEvent: evento de acción al pulsar el botón, tambien hay alertas si no se rellena correctamente o se dejan campos vacíos
      */
+    // Cambios 28/05
     public void botonGuardar(ActionEvent actionEvent) {
         String titulo = txtTitulo.getText();
         String artista = txtArtista.getText();
@@ -125,6 +126,7 @@ public class PantallaAñadirAudiosController {
             if (audioEditar != null) {
                 audio = audioEditar;
             } else {
+                // Cambios 28/05
                 switch (tipo) {
                     case "Canción":
                         audio = new Cancion();
@@ -138,14 +140,7 @@ public class PantallaAñadirAudiosController {
                         audio = new AudioLibro();
                         ((AudioLibro) audio).setIdioma(extra);
                         break;
-                    default:
-                        puedeGuardar = false;
-                        Alert alertTipo = new Alert(Alert.AlertType.ERROR);
-                        alertTipo.setTitle("Tipo no reconocido");
-                        alertTipo.setHeaderText(null);
-                        alertTipo.setContentText("El tipo de audio no es válido.");
-                        alertTipo.showAndWait();
-                }
+                    }
             }
         }
 
@@ -154,7 +149,6 @@ public class PantallaAñadirAudiosController {
             audio.setArtista(artista);
             audio.setDescripcion(descripcion);
             audio.setDuracion(duracion);
-            audio.setTipoAudio(org.jose.soundflow.utils.Utilidades.corregirEnum(tipo));
             audio.setUsuario(usuario);
 
             boolean exito;
@@ -201,6 +195,7 @@ public class PantallaAñadirAudiosController {
      * Método para que al pulsar en editar se carguen los datos del audio en los campos
      * @param audio: audio que se va a editar
      */
+    // Cambios 28/05
     public void inicializarConAudio(Audio audio) {
         this.audioEditar = audio;
 
@@ -208,7 +203,14 @@ public class PantallaAñadirAudiosController {
         txtArtista.setText(audio.getArtista());
         txtDescripcion.setText(audio.getDescripcion());
         txtDuracion.setText(String.valueOf(audio.getDuracion()));
-        tipoComboBox.setValue(audio.getTipoAudio().toString());
+
+        if (audio instanceof Cancion) {
+            tipoComboBox.setValue("Canción");
+        } else if (audio instanceof Podcast) {
+            tipoComboBox.setValue("Podcast");
+        } else if (audio instanceof AudioLibro) {
+            tipoComboBox.setValue("Audiolibro");
+        }
 
         // Mostrar los campos extra según el tipo
         labelExtra.setVisible(true);

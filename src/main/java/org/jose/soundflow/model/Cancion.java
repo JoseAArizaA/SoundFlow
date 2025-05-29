@@ -5,8 +5,8 @@ public class Cancion extends Audio {
 
     public Cancion() {}
 
-    public Cancion(int idAudio, String titulo, String artista, String descripcion, int duracion, TipoContenido tipoAudio, Usuario usuario, String genero) {
-        super(idAudio, titulo, artista, descripcion, duracion, tipoAudio, usuario);
+    public Cancion(int idAudio, String titulo, String artista, String descripcion, int duracion, Usuario usuario, String genero) {
+        super(idAudio, titulo, artista, descripcion, duracion, usuario);
         this.genero = genero;
     }
 
